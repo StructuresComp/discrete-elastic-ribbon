@@ -1,0 +1,67 @@
+# Config for plot_hmid_all_wl.py: |H_mid|/L vs ΔW/L for all W/L in one plot.
+# Single energy model. Each entry in series: one pkl, one W/L label, one branch (increasing/decreasing).
+# Different color and line style per W/L. Legend at top.
+
+base_dir: ".."
+labels:
+  xaxis: "Norm. Shear, $\\Delta W / L$"
+  yaxis: "Norm. Midpoint Height, $|H_{mid}/L|$"
+fonts:
+  text: "CMR10"
+  math: "CMMI10"
+fontsize_labels: 12
+fontsize_suptitle: 14
+fontsize_legend: 11
+
+# Figure
+title: "Sano - Midpoint Height"
+figsize: [8, 7]
+# tight_layout_rect: [left, bottom, right, top] in 0-1. Higher top = plot extends up, less gap below legend.
+tight_layout_rect: [0, 0, 1, 0.85]
+# Legend y (figure coords). Slightly below 1 so legend sits just above plot.
+suptitle_y: 0.99
+legend_bbox_y: 0.93
+
+# Axis limits
+xlim: [0, 0.5]
+ylim: [-0.05, 0.35]
+
+# Line style: thick lines, distinct colors and linestyles per series
+linewidth: 2.5
+alpha: 0.95
+# No solid: dashed, dash-dot, dotted (cycle for 4th)
+colors: ['#008b8b','#d62728', '#2ca02c', '#ff7f0e']
+linestyles: ['--', '-.', ':', '--']
+
+# Series: one entry per W/L (same structure as subplots in config_hmid_fy, without force_side/ylim_fy)
+series:
+  - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b2_n63.pkl"
+    subplot_title: "W/L = 1/2"
+    increasing: false
+  - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b6_n63.pkl"
+    subplot_title: "W/L = 1/6"
+    increasing: false
+  - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b12_n63.pkl"
+    subplot_title: "W/L = 1/12"
+    increasing: false
+  - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b20_n45.pkl"
+    subplot_title: "W/L = 1/20"
+    increasing: false
+
+# Homotopy-aided series: same Hmid vs Delta W/L, plotted in a second legend box.
+# Paths are relative to homotopy_base_dir (project root when "../.." from this config).
+homotopy_base_dir: "../.."
+homotopy_series:
+  - pkl: "shear_induced_homotopy/pkl_Ye10de3/sano/shear_homotopy_n63.pkl"
+    subplot_title: "W/L* = 1/2"
+  - pkl: "shear_induced_homotopy/pkl_Ye10de3/sano_1b3/shear_homotopy_n63.pkl"
+    subplot_title: "W/L* = 1/3"
+# Distinct colors; dashed / dash-dot only (no markers). Line width matches main series (linewidth).
+homotopy_colors: ['#7B2CBF', '#00B4D8']
+homotopy_linestyles: ['--', '-.']
+# Second legend vertical position (figure coords), just below main legend
+homotopy_legend_bbox_y: 0.87
+
+# Save a single pkl with all curve data + plot config for reproduction (reproduce_plots/figure1/).
+reproduce_pkl: true
+reproduce_pkl_path: "../../reproduce_plots/figure1/figure1_data.pkl"

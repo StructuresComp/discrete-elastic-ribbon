@@ -1,0 +1,98 @@
+# Config for plot_hmid.py: |H_mid|/L vs DeltaW/L for multiple energy models.
+# 4 W/L ratios -> 4 subplots (2x2). Each subplot shows one curve per energy model.
+#
+# For each energy model, list 4 entries (one per subplot), in order of W/L ratios.
+# Each entry:
+#   pkl: path to the pkl file (relative to base_dir or absolute)
+#   shear_increasing: true  -> plot DeltaW increasing branch (phase 3)
+#                     false -> plot DeltaW decreasing branch (phase 4)
+#
+# base_dir: relative to this config file's directory. ".." = validate_discretization/.
+# xlim, ylim: axis limits for all subplots [min, max].
+# title: figure suptitle.
+# figsize: [width, height] in inches.
+# wspace, hspace: spacing between subplots (fraction of average axis size).
+# tight_layout_rect: [left, bottom, right, top] in normalized figure coords; space above top reserved for title/legend.
+# subplot_titles: list of 4 titles for the 4 subplots (order: 1/2, 1/6, 1/12, 1/20).
+# fea: optional overlay of FEA scatter (one pkl per subplot). Schema: delta_w_over_L, H_mid_over_L_abs.
+
+base_dir: ".."
+xlim: [0, 0.5]
+ylim: [-0.05, 0.35]
+title: "Shear Induced Bifurcation at b = 0.1mm"
+figsize: [14, 10]
+wspace: 0.25
+hspace: 0.35
+tight_layout_rect: [0, 0, 1, 0.80]   # lower top = more room for subplot titles
+subplot_titles:
+  - "W/L = 1/2"
+  - "W/L = 1/6"
+  - "W/L = 1/12"
+  - "W/L = 1/20"
+
+# Optional: overlay FEA scatter on each subplot (one pkl per subplot, same order).
+# FEA pkl schema: delta_w_over_L, H_mid_over_L_abs, label, n_points.
+fea:
+  pkl_dir: "results_bc2/fea_h1e-4/pkls"
+  pkl_files:
+    - "center_z_vs_endy_W_L_1_2.pkl"
+    - "center_z_vs_endy_W_L_1_6.pkl"
+    - "center_z_vs_endy_W_L_1_12.pkl"
+    - "center_z_vs_endy_W_L_1_20.pkl"
+  alpha: 0.55
+  color: "#2F4F4F"
+  marker: "^"
+  s: 28
+  label: "FEA"
+
+# 4 wbyl ratios: 1/2, 1/6, 1/12, 1/20 (one subplot each). Replace paths with your actual pkl locations.
+energies:
+  kirchhoff:
+    - pkl: "/home/shivam/Ribbon/dismech-python-general/clamped_clamped/results_figure01/pkls_Y1e10/kirchhoff_1b2.pkl"
+      shear_increasing: true
+    - pkl: "/home/shivam/Ribbon/dismech-python-general/clamped_clamped/results_figure01/pkls_Y1e10/kirchhoff_1b6.pkl"
+      shear_increasing: true
+    - pkl: "/home/shivam/Ribbon/dismech-python-general/clamped_clamped/results_figure01/pkls_Y1e10/kirchhoff_1b12.pkl"
+      shear_increasing: true
+    - pkl: "/home/shivam/Ribbon/dismech-python-general/clamped_clamped/results_figure01/pkls_Y1e10/kirchhoff_1b20.pkl"
+      shear_increasing: true
+  sadowsky:
+    - pkl: "results_bc2/sadowsky_Ye10d1e3/1b12_n45.pkl"
+      shear_increasing: true
+    - pkl: "results_bc2/sadowsky_Ye10d1e3/1b12_n45.pkl"
+      shear_increasing: true
+    - pkl: "results_bc2/sadowsky_Ye10d1e3/1b12_n45.pkl"
+      shear_increasing: true
+    - pkl: "results_bc2/sadowsky_Ye10d1e3/1b20_n45.pkl"
+      shear_increasing: true
+  wunderlich:
+    - pkl: "results_bc2/wunderlich_Ye10d1e3/1b12_n45.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/wunderlich_Ye10d1e3/1b12_n45.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/wunderlich_Ye10d1e3/1b12_n45.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/wunderlich_Ye10d1e3/1b20_n45.pkl"
+      shear_increasing: false
+  sano:
+    - pkl: "results_bc2/sano_Ye10d1e3/1b3_n63.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/sano_Ye10d1e3/1b6_n63.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/sano_Ye10d1e3/1b12_n63.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/sano_Ye10d1e3/1b20_n63.pkl"
+      shear_increasing: false
+  audoly:
+    - pkl: "results_bc2/audoly_Ye10d1e3/1b3_n63.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/audoly_Ye10d1e3/1b6_n63.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/audoly_Ye10d1e3/1b12_n63.pkl"
+      shear_increasing: false
+    - pkl: "results_bc2/audoly_Ye10d1e3/1b20_n21.pkl"
+      shear_increasing: false
+
+# Save one pkl for reproduction (reproduce_plots/figure2).
+reproduce_pkl: true
+reproduce_pkl_path: "../../reproduce_plots/figure2/figure2_data.pkl"

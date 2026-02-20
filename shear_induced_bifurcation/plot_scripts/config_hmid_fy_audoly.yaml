@@ -1,0 +1,103 @@
+# Config for plot_hmid_fy.py: |H_mid|/L and normalized Fy vs ΔW/L.
+# Single energy model, 4 pkls -> 4 subplots (2x2).
+#
+# For each subplot:
+#   pkl: path to pkl (relative to base_dir or absolute)
+#   subplot_title: W/L subtitle (e.g. "W/L = 1/6")
+#   increasing: true  -> plot ΔW increasing branch (phase 3)
+#               false -> plot ΔW decreasing branch (phase 4)
+#   force_side: "start" | "end" -> sum reaction forces at start or end nodes for Fy
+#   ylim_fy: optional [min, max] for right axis (normalized Fy) for this subplot only.
+#            If omitted, the global ylim_fy below is used; if that is null, limits are auto.
+#
+# Normalization: shear force is F * L / (Y * h³) (dimensionless).
+# shear_resultant: false -> plot Fy only; true -> plot sqrt(Fy² + Fz²).
+# Axis limits: xlim, ylim (left = |H_mid|/L). Global ylim_fy = default for all subplots (null = auto).
+
+base_dir: ".."
+shear_resultant: false   # false = Fy only, true = sqrt(Fy² + Fz²)
+# Figure
+title: "Sano — Shear Force"
+# title: "Audoly — Shear Force"
+figsize: [16, 10]
+wspace: 0.28
+hspace: 0.35
+tight_layout_rect: [0, 0, 1, 0.82]
+
+# Axis limits (all subplots)
+xlim: [0, 0.5]
+ylim: [-0.05, 0.35]        # left axis: |H_mid|/L
+ylim_fy: null              # right axis: normalized Fy; null = auto per subplot
+
+# Single energy: 4 entries, one per subplot (order: top-left, top-right, bottom-left, bottom-right).
+# energy: sano
+# subplots:
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b2_n63.pkl"
+#     subplot_title: "W/L = 1/2"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 20.0]   # e.g. [-0.5, 2.0] or null for auto
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b6_n63.pkl"
+#     subplot_title: "W/L = 1/6"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 2.0]
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b12_n63.pkl"
+#     subplot_title: "W/L = 1/12"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 2.0]
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b20_n45.pkl"
+#     subplot_title: "W/L = 1/20"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 2.0]
+
+# energy: sano
+# subplots:
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b3_n63.pkl"
+#     subplot_title: "W/L = 1/3"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 20.0]   # e.g. [-0.5, 2.0] or null for auto
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b4_n63.pkl"
+#     subplot_title: "W/L = 1/4"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 2.0]
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b5_n63.pkl"
+#     subplot_title: "W/L = 1/5"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 2.0]
+#   - pkl: "results_bc1_he1-3/sano_Ye10d1e3/1b6_n63.pkl"
+#     subplot_title: "W/L = 1/6"
+#     increasing: false
+#     force_side: end
+#     ylim_fy: [-0.1, 2.0]
+
+energy: audoly
+subplots:
+  - pkl: "results_bc1_he1-3/audoly_Ye10d1e3/1b2_n63.pkl"
+    subplot_title: "W/L = 1/2"
+    increasing: false
+    force_side: end
+    ylim_fy: [-0.1, 20.0]
+  - pkl: "results_bc1_he1-3/audoly_Ye10d1e3/1b6_n63.pkl"
+    subplot_title: "W/L = 1/6"
+    increasing: false
+    force_side: end
+    ylim_fy: [-0.1, 4.0]
+  - pkl: "results_bc1_he1-3/audoly_Ye10d1e3/1b12_n63.pkl"
+    subplot_title: "W/L = 1/12"
+    increasing: false
+    force_side: end
+    ylim_fy: [-0.1, 3.0]
+  - pkl: "results_bc1_he1-3/audoly_Ye10d1e3/1b20_n63.pkl"
+    subplot_title: "W/L = 1/20"
+    increasing: true
+    force_side: end
+    ylim_fy: [-0.1, 1.4]
+
+reproduce_pkl: true
+reproduce_pkl_path: "../../reproduce_plots/figure5/figure5_data.pkl"

@@ -1,0 +1,149 @@
+# =============================================================================
+# Shear-induced bifurcation simulation config
+# =============================================================================
+# All geometry, material, simulation, and tracking options in one place.
+# Use: python simulate.py --config this_file.yaml [--pkl-dir ...] [--plot-dir ...]
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Geometry: ribbon reference configuration
+# -----------------------------------------------------------------------------
+geometry:
+  # Reference length of the rod (m). Used to build initial horizontal rod and W/L ratio.
+  L: 0.1
+  # Ribbon width = w_by_l_ratio * L. Use a fraction string (e.g. "1/14") or a float. List allowed for multiple runs (e.g. ["1/14", "1/18"]).
+  w_by_l_ratio: "1/12"
+  # Rod (ribbon) thickness in the thin dimension (m). Cross-section is w x h.
+  h: 0.001
+  # Shell thickness for shell elements; 0 for rod-only.
+  shell_h: 0
+  # Derived cross-section: A = w*h, I1 = w*h^3/12, I2 = h*w^3/12, J = w*h^3/3 (stored as geom_params).
+
+# -----------------------------------------------------------------------------
+# Material: linear elastic rod/shell
+# -----------------------------------------------------------------------------
+material:
+  # Density (kg/m^3).
+  density: 1000
+  # Young's modulus for rod (Pa).
+  youngs_rod: 1.0e10
+  # Young's modulus for shell (Pa); 0 if rod-only.
+  youngs_shell: 0
+  # Poisson ratio for rod (dimensionless).
+  poisson_rod: 0.5
+  # Poisson ratio for shell.
+  poisson_shell: 0
+
+# -----------------------------------------------------------------------------
+# Simulation parameters (dismech.SimParams)
+# -----------------------------------------------------------------------------
+simulation:
+  # If true, solve static equilibrium only (no time stepping).
+  static_sim: false
+  # If true, restrict to 2D (e.g. y=0).
+  two_d_sim: false
+  # If true, use mid-edge nodes for shell elements.
+  use_mid_edge: false
+  # Use line search in Newton solver.
+  use_line_search: false
+  # Show floor in visualizer.
+  show_floor: false
+  # Whether to log state at log_step intervals.
+  log_data: true
+  # Log every Nth step (1 = every step).
+  log_step: 1
+  # Base time step (s). May be reduced by adaptive stepper.
+  dt: 0.001
+  # Max Newton iterations per step.
+  max_iter: 100
+  # Total simulation time (s).
+  total_time: 12.5
+  # Plot/visualize every Nth step.
+  plot_step: 1
+  # Newton convergence: relative tolerance for residual.
+  tol: 0.001
+  # Newton convergence: absolute force tolerance.
+  ftol: 0.0001
+  # Adaptive-dt criterion: max |dq|/dt < dtol (displacement rate).
+  dtol: 0.01
+
+# -----------------------------------------------------------------------------
+# Environment: external forces
+# -----------------------------------------------------------------------------
+environment:
+  # Gravity vector (m/s^2) [x, y, z]. Can be changed in BC function (e.g. ramp).
+  gravity: [0.0, 0.0, -9.81]
+
+# -----------------------------------------------------------------------------
+# Boundary condition / motion (shear-induced bifurcation protocol)
+# -----------------------------------------------------------------------------
+boundary_condition:
+  # Distance threshold to classify "start" nodes: node with x <= start_x_threshold.
+  start_x_threshold: 0.01
+  # Distance threshold to classify "end" nodes: node with x >= end_x_threshold.
+  end_x_threshold: 0.09
+  # Prescribed displacement speed (m per step): move start nodes by u0*dt per step.
+  u0: 0.01
+  # Time (s) during which strong gravity is applied to settle the rod.
+  gravity_ramp_end_time: 0.05
+  # Gravity during ramp (m/s^2) [x, y, z].
+  gravity_during_ramp: [0.0, 0.0, -1000.0]
+  # Gravity after ramp (m/s^2); often [0,0,0] to isolate elastic response.
+  gravity_after_ramp: [0.0, 0.0, 0.0]
+  # Motion phases: list of {start_time, end_time, direction, reverse?}.
+  # direction 0=x, 1=y, 2=z. reverse: true = use -u0 for that phase (e.g. reverse shear).
+  motion_phases:
+    - { start_time: 0.05,  end_time: 2.55, direction: 0 }           # move in x
+    - { start_time: 2.55,  end_time: 7.55, direction: 1 }         # move in y (shear)
+    - { start_time: 7.55,  end_time: 12.5, direction: 1, reverse: true }  # reverse y
+
+# -----------------------------------------------------------------------------
+# Energy model (rod)
+# -----------------------------------------------------------------------------
+energy_model:
+  # One of: sano, wunderlich, kirchhoff, sadowsky, audoly.
+  name: sano
+  # Sano model: zeta (m). If null, computed from geometry (w, h).
+  sano_zeta: null
+  # Wunderlich model: W (m). If null, computed from geometry (w).
+  wunderlich_W: null
+
+# -----------------------------------------------------------------------------
+# Adaptive time-stepping (ImplicitEulerTimeStepper)
+# -----------------------------------------------------------------------------
+adaptive_dt:
+  # Enable adaptive time step based on max |dq|.
+  enabled: true
+  # Max allowed |dq| per step; if exceeded, dt is reduced.
+  max_dq_threshold: 0.1
+  # Factor to multiply dt when reducing (e.g. 0.5).
+  dt_reduction_factor: 0.5
+  # Min dt = base_dt / min_dt_ratio (e.g. 1e6 -> dt_min = dt/1e6).
+  min_dt_ratio: 1000000
+  # Max dt = base_dt * max_dt_ratio (e.g. 2.0).
+  max_dt_ratio: 2.0
+  # Max number of dt reductions per step before giving up.
+  max_dt_reductions: 40
+
+# -----------------------------------------------------------------------------
+# Tracking: what to record at each logged timestep and save in pkl
+# -----------------------------------------------------------------------------
+tracking:
+  # Elastic (reaction) forces at selected nodes. If false, no force tracking.
+  track_forces: true
+  # If true, track forces at all nodes; if false, only at fixed (boundary) nodes.
+  track_forces_all_nodes: false
+  # Hessian (free-DOF) condition number at each logged step (for numerics).
+  track_condition_number: true
+  # Total elastic energy (scalar) at each logged step.
+  track_elastic_energy: true
+  # Material directors (a1, a2, m1, m2) per edge at each logged step.
+  track_material_directors: true
+
+# -----------------------------------------------------------------------------
+# Discretization and output (often overridden by CLI)
+# -----------------------------------------------------------------------------
+# Number of nodes for the rod (single value or list, e.g. [21, 63, 105]).
+nodes: [21, 63, 105]
+# W/L ratios to run if not from geometry.w_by_l_ratio (e.g. ["1/14", "1/18"]).
+# w_by_l_ratios: ["1/14", "1/18"]

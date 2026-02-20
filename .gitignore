@@ -29,3 +29,6 @@ htmlcov/
 
 # Large generated data (can be regenerated)
 *.pkl
+
+# Shear-induced bifurcation outputs (regenerate with simulate.py)
+shear_induced_bifurcation/results*
