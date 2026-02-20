@@ -1,0 +1,113 @@
+# =============================================================================
+# Shear-induced bifurcation with homotopy: width change between phase 3 and 4
+# =============================================================================
+# Phases: 1) move x, 2) move y (shear), 3) HOMOTOPY (no motion, width ramp),
+#         4) reverse y shear (with end width)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Geometry: ribbon reference configuration
+# -----------------------------------------------------------------------------
+geometry:
+  L: 0.1
+  w_by_l_ratio: "1/12"   # Initial width = L/12 ≈ 0.00833 m
+  h: 0.001
+  shell_h: 0
+
+# -----------------------------------------------------------------------------
+# Material
+# -----------------------------------------------------------------------------
+material:
+  density: 1000
+  youngs_rod: 1.0e10
+  youngs_shell: 0
+  poisson_rod: 0.5
+  poisson_shell: 0
+
+# -----------------------------------------------------------------------------
+# Simulation parameters
+# -----------------------------------------------------------------------------
+simulation:
+  static_sim: false
+  two_d_sim: false
+  use_mid_edge: false
+  use_line_search: false
+  show_floor: false
+  log_data: true
+  log_step: 1
+  dt: 0.001
+  max_iter: 100
+  total_time: 14.0
+  plot_step: 1
+  tol: 0.001
+  ftol: 0.0001
+  dtol: 0.01
+
+# -----------------------------------------------------------------------------
+# Environment
+# -----------------------------------------------------------------------------
+environment:
+  gravity: [0.0, 0.0, -9.81]
+
+# -----------------------------------------------------------------------------
+# Boundary condition and motion phases
+# Phase 1: move x | Phase 2: move y (shear) | Homotopy: width ramp | Phase 4: reverse y
+# -----------------------------------------------------------------------------
+boundary_condition:
+  start_x_threshold: 0.01
+  end_x_threshold: 0.09
+  u0: 0.01
+  gravity_ramp_end_time: 0.05
+  gravity_during_ramp: [0.0, 0.0, -1000.0]
+  gravity_after_ramp: [0.0, 0.0, -9.8]
+  # Motion phases (homotopy phase is separate, no boundary motion during it)
+  motion_phases:
+    - { start_time: 0.05,  end_time: 2.55, direction: 0 }           # Phase 1: move x
+    - { start_time: 2.55,  end_time: 6.55, direction: 1 }           # Phase 2: move y (shear)
+    # Homotopy phase: 7.55 - 8.55 (no motion, width ramp - see homotopy section)
+    - { start_time: 9.55,  end_time: 14.0, direction: 1, reverse: true }  # Phase 4: reverse y
+
+# -----------------------------------------------------------------------------
+# Homotopy phase: width ramp (no boundary node motion)
+# Between phase 2 (7.55s) and phase 4 (8.55s), interpolate width linearly
+# -----------------------------------------------------------------------------
+homotopy:
+  start_time: 6.55
+  end_time: 9.55
+  # Widths in meters. start_width: null = use initial geometry width
+  start_width: null   # null = use w_from_geometry (w_by_l_ratio * L)
+  end_width: 0.0333    # Target width at end of homotopy (1.44x if L/12 ≈ 0.00833)
+
+# -----------------------------------------------------------------------------
+# Energy model
+# -----------------------------------------------------------------------------
+energy_model:
+  name: sano
+  sano_zeta: null
+  wunderlich_W: null
+
+# -----------------------------------------------------------------------------
+# Adaptive time-stepping
+# -----------------------------------------------------------------------------
+adaptive_dt:
+  enabled: true
+  max_dq_threshold: 0.1
+  dt_reduction_factor: 0.5
+  min_dt_ratio: 1000000
+  max_dt_ratio: 2.0
+  max_dt_reductions: 40
+
+# -----------------------------------------------------------------------------
+# Tracking
+# -----------------------------------------------------------------------------
+tracking:
+  track_forces: true
+  track_forces_all_nodes: false
+  track_condition_number: true
+  track_elastic_energy: true
+  track_material_directors: true
+
+# -----------------------------------------------------------------------------
+# Discretization
+# -----------------------------------------------------------------------------
+nodes: [63]

@@ -32,3 +32,9 @@ htmlcov/
 
 # Shear-induced bifurcation outputs (regenerate with simulate.py)
 shear_induced_bifurcation/results*
+
+# Shear homotopy outputs (regenerate with simulate.py)
+shear_induced_homotopy/out/
+shear_induced_homotopy/pkl_Ye10de3/
+shear_induced_homotopy/plot_Ye10d3/
+shear_induced_homotopy/results_bc1_dL_1b2/

@@ -57,6 +57,46 @@ Geometry and material changes are applied in place; DOF structure (nodes, edges)
 
 ---
 
+## Shear-Induced Homotopy Demo
+
+The `shear_induced_homotopy/` directory demonstrates homotopy in a shear-induced bifurcation setting:
+
+1. **Phase 1–2**: Apply boundary shear (move clamped end nodes in x, then y).
+2. **Phase 3 (homotopy)**: No boundary motion; *ramp rod width* from start to end using `update_rod_geometry(width=...)` and `refresh_rod_params()` at each step.
+3. **Phase 4**: Reverse shear with the new width.
+
+The homotopy phase smoothly interpolates cross-section width while the simulation runs, enabling path-following and bifurcation studies.
+
+### Demo commands
+
+```bash
+# Run simulation (generates pkl in out/pkls, plots in out/plots)
+cd shear_induced_homotopy
+python simulate.py --config simulate_shear_homotopy_config.yaml --pkl-dir out/pkls --plot-dir out/plots
+
+# Override discretization or energy model
+python simulate.py --config simulate_shear_homotopy_config.yaml --pkl-dir out/pkls --plot-dir out/plots --nodes 45
+python simulate.py --config simulate_shear_homotopy_config.yaml --pkl-dir out/pkls --plot-dir out/plots --energy-model sano
+
+# Plot 2×2 subplots (Hmid vs ΔW, with FEA reference and shear force)
+python plot_shear_homotopy.py --config config_shear_homotopy_plot.yaml --plot-dir out/plots --output shear_homotopy_sano.png
+```
+
+### Key config parameters (`simulate_shear_homotopy_config.yaml`)
+
+| Section | Parameter | Description |
+|---------|-----------|-------------|
+| `geometry` | `L`, `w_by_l_ratio`, `h` | Rod length, initial width (as fraction of L), thickness |
+| `homotopy` | `start_time`, `end_time` | Time window for width ramp (no boundary motion) |
+| `homotopy` | `start_width`, `end_width` | Width at start/end of homotopy (`null` = use initial) |
+| `boundary_condition` | `motion_phases` | List of `{start_time, end_time, direction, reverse}` for node motion |
+| `simulation` | `dt`, `total_time`, `max_iter` | Time step, duration, Newton iteration limit |
+| `adaptive_dt` | `enabled`, `max_dq_threshold` | Enable adaptive dt, displacement threshold |
+
+The `before_step` callback applies gravity ramp, motion phases, and during the homotopy window calls `robot.update_rod_geometry(width=...)` and `stepper.refresh_rod_params(robot)` at each step.
+
+---
+
 ## Features
 
 - 3D discrete elastic rod stretching, bending, and twisting.

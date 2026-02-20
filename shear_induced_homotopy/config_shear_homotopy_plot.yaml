@@ -1,0 +1,73 @@
+# Config for plot_shear_homotopy.py: 2x2 subplots for shear homotopy (Sano, reverse direction).
+#
+# Layout:
+#   Subplot 1 (W/L=1/2): Hmid/L vs Delta W/L + FEA reference
+#   Subplot 2 (W/L=1/3): Hmid/L vs Delta W/L + FEA reference
+#   Subplot 3 (W/L=1/2): Hmid/L vs Delta W/L + shear force (twin axis)
+#   Subplot 4 (W/L=1/3): Hmid/L vs Delta W/L + shear force (twin axis)
+#
+# All plots use the reverse (decreasing Delta W) branch after homotopy.
+# Paths are relative to base_dir (or absolute). base_dir is relative to this config's directory.
+
+base_dir: ".."
+
+# -----------------------------------------------------------------------------
+# Sano pkl files (shear homotopy output): one per W/L ratio (1/2, 1/3).
+# Same file can be used for both until separate runs are available.
+# -----------------------------------------------------------------------------
+sano:
+  pkl_W_L_1_2: "shear_induced_homotopy/pkl_Ye10de3/sano/shear_homotopy_n63.pkl"
+  pkl_W_L_1_3: "shear_induced_homotopy/pkl_Ye10de3/sano_1b3/shear_homotopy_n63.pkl"
+
+# -----------------------------------------------------------------------------
+# FEA reference (one pkl per W/L). Schema: delta_w_over_L, H_mid_over_L_abs.
+# -----------------------------------------------------------------------------
+fea:
+  pkl_dir: "validate_discretization/results_bc1_he1-3/fea_h1e-3/pkls"
+  pkl_files:
+    - "center_z_vs_endy_W_L_1_2.pkl"
+    - "center_z_vs_endy_W_L_1_3.pkl"   # add file when available; script skips if missing
+  alpha: 0.55
+  color: "#2F4F4F"
+  marker: "^"
+  s: 28
+  label: "FEA"
+
+# -----------------------------------------------------------------------------
+# Fonts: CMR10 for text, CMMI10 for math
+# -----------------------------------------------------------------------------
+fonts:
+  text: "CMR10"
+  math: "CMMI10"
+
+# -----------------------------------------------------------------------------
+# Axis labels (used for x, y left, y right)
+# -----------------------------------------------------------------------------
+labels:
+  xaxis: "Norm. Shear, $\\Delta W / L$"
+  yaxis: "Norm. Midpoint Height, $|H_{mid}/L|$"
+  yaxis_right: "Norm. Shear Force, $\\hat{F}_{shear} (FL/(Yb^3))$ "
+
+# -----------------------------------------------------------------------------
+# Figure and axis limits
+# -----------------------------------------------------------------------------
+title: "Shear homotopy - Sano (reverse direction)"
+figsize: [14, 10]
+wspace: 0.28
+hspace: 0.35
+tight_layout_rect: [0, 0, 1, 0.82]
+
+xlim: [0, 0.4]
+ylim: [-0.05, 0.35]
+ylim_fy: [-0.1, 5.0]   # right axis (shear) in subplots 3 & 4; null = auto
+
+# Subplot titles (order: 1, 2, 3, 4)
+subplot_titles:
+  - "W/L = 1/2"
+  - "W/L = 1/3"
+  - "W/L = 1/2"
+  - "W/L = 1/3"
+
+# Shear force: which side to sum (start vs end nodes); color for force line/axis (twin)
+force_side: "end"
+force_color: "#0066AA"
