@@ -149,6 +149,9 @@ Only the analytical energy expression E(ε̃) needs to be implemented; the rest 
 
 ## Shear-Induced Bifurcation Simulation
 
+![Shear-induced bifurcation](renders/shear_induced_bifurcation_ribbon_with_sano_wbyl_1by6.gif)  
+*Render demo: Sano, W/L=1/6*
+
 The `shear_induced_homotopy/simulate.py` script implements the boundary value problem that isolates the **shear-induced supercritical pitchfork bifurcation** of a pre-buckled elastic ribbon.
 
 **Boundary condition:** A ribbon (length L = 0.1 m, width W, thickness b) is clamped at both ends. First, one clamp is moved toward the other along the ribbon axis to apply longitudinal compression (about 25% of L), which buckles the ribbon. Then, with that pre-buckled state fixed, a transverse displacement (delta-W) is applied at one clamp to impose shear. The simulation drives these two loading phases via prescribed motion of the boundary nodes.
@@ -193,6 +196,9 @@ Outputs are written to `--pkl-dir`; plots (if generated) go to `--plot-dir`. Use
 ---
 
 ## Homotopy: Generalized Geometry & Material Updates During Simulation
+
+![Homotopy-aided shear](renders/shear_induced_bifurcation_ribbon_with_sano_wbyl_1by2_homotopy_aided.gif)  
+*Render demo: Sano W/L=1/12 to W/L=1/2*
 
 Discrete Elastic Ribbon extends PyDismech with a **homotopy API** that allows changing rod cross-section geometry (width, height) and material parameters *during* a simulation, without restarting or re-discretizing.
 
