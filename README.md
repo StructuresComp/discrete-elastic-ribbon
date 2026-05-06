@@ -1,8 +1,48 @@
-# Discrete Elastic Ribbon
+<h1 align="center">Discrete Elastic Ribbons</h1>
+<h3 align="center">A Unified Discrete Differential Geometry Framework for One-Dimensional Energy Models</h3>
 
-A discrete differential geometry deformable structure simulator for elastic ribbons with **adaptive time-stepping**, **generalized energy formulations**, and **homotopic geometry/material updates** during simulation.
+<p align="center">
+  <strong>Shivam K. Panda</strong> &nbsp;·&nbsp; <strong>M. Khalid Jawed</strong><br>
+  <em>University of California, Los Angeles</em>
+</p>
 
-This codebase was forked from [PyDismech](https://github.com/StructuresComp/dismech-python) at commit [4f0eb69](https://github.com/StructuresComp/dismech-python/commit/4f0eb69d9dcf21bbbc634d3eaa9b3b36235a2b2a) and refactored for Discrete Elastic Ribbon.
+<p align="center">
+  <a href="https://github.com/StructuresComp/discrete-elastic-ribbon">
+    <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?logo=arxiv&logoColor=white" alt="arXiv">
+  </a>
+  <a href="https://github.com/StructuresComp/discrete-elastic-ribbon">
+    <img src="https://img.shields.io/badge/Project-Page-1f72bb?logo=github&logoColor=white" alt="Project Page">
+  </a>
+  <a href="https://github.com/StructuresComp/discrete-elastic-ribbon">
+    <img src="https://img.shields.io/badge/Reference%20Impl-Python-3776ab?logo=python&logoColor=white" alt="Python Reference Implementation">
+  </a>
+  <a href="https://github.com/StructuresComp/discrete-elastic-ribbon-jax">
+    <img src="https://img.shields.io/badge/High--Performance%20Impl-JAX-ff6f00?logo=google&logoColor=white" alt="JAX Implementation">
+  </a>
+</p>
+
+## Abstract
+
+Elastic ribbons — slender structures whose length (*L*), width (*W*), and thickness (*b*) satisfy *L* ≫ *W* ≫ *b* — exhibit mechanical behaviors intermediate between one-dimensional rods (*L* ≫ *W*, *b*) and two-dimensional plates (*L*, *W* ≫ *b*). In quadratic Kirchhoff-type rod-based frameworks such as Discrete Elastic Rods (DER), the governing equilibrium equations are independent of width and therefore cannot capture width-dependent mechanical effects. Reduced centerline-based ribbon models attempt to capture width dependence via coupled bending–twisting energies; however, their relative accuracy remains unclear due to the absence of a unified simulation framework.
+
+In this work, we formulate a framework grounded in discrete differential geometry where the energy is expressed as functions of coupled bending–twisting strain measures along the centerline, rather than a linear sum of quadratic bending and twisting energies in DER. We derive analytical gradients and Hessians of the energy that enable implicit time integration. Within this unified setting, we compare five ribbon models: **Kirchhoff**, **Sadowsky**, **Wunderlich**, **Sano**, and **Audoly**. As a benchmark, a straight ribbon is longitudinally constrained into a pre-buckled arch and subjected to transverse displacement, inducing a supercritical pitchfork bifurcation. Predicted bifurcation thresholds are compared against shell-based finite element simulations, with the **Sano** model providing the closest agreement in capturing width-dependent shifts. Our high-performance JAX-based implementation achieves *O*(*N*) per-iteration cost and confirms that the Sano model introduces negligible per-iteration overhead relative to standard DER.
+
+## Implementations
+
+This work is provided through two official repositories:
+
+| Repository | Description |
+|---|---|
+| [`discrete-elastic-ribbon`](https://github.com/StructuresComp/discrete-elastic-ribbon) | **Reference Python implementation.** All five energy models, adaptive implicit Euler with a robust regularized linear solver, and a homotopy API for changing rod geometry/material during simulation. |
+| [`discrete-elastic-ribbon-jax`](https://github.com/StructuresComp/discrete-elastic-ribbon-jax) | **High-performance JAX/Equinox implementation.** Banded Hessian assembly with LAPACK banded factorization, vectorized stencil operations, and end-to-end differentiability through the implicit Newton–Raphson solver. |
+
+---
+
+## About this Repository
+
+You are reading the **reference Python implementation**. It provides a discrete differential geometry simulator for elastic ribbons with **adaptive time-stepping**, **generalized energy formulations**, and **homotopic geometry/material updates** during simulation.
+
+This codebase was forked from [PyDismech](https://github.com/StructuresComp/dismech-python) at commit [4f0eb69](https://github.com/StructuresComp/dismech-python/commit/4f0eb69d9dcf21bbbc634d3eaa9b3b36235a2b2a) and refactored for Discrete Elastic Ribbon. For the high-performance JAX/Equinox port, see [`discrete-elastic-ribbon-jax`](https://github.com/StructuresComp/discrete-elastic-ribbon-jax).
 
 ## Setup
 
